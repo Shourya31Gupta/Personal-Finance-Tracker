@@ -62,28 +62,28 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <Navbar />
-      <h1 className="main-heading">Personal Finance Tracker</h1>
-
-      <Routes>
-        <Route path="/" element={<Home transactions={transactions} />} />
-        <Route
-          path="/transactions"
-          element={
-            <Transactions
-              transactions={transactions}
-              addTransaction={addTransaction}
-              deleteTransaction={deleteTransaction}
-              editTransaction={editTransaction}
-            />
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={<Dashboard transactions={transactions} />}
-        />
-      </Routes>
+      <main className="container mx-auto px-4 py-8">
+        <Routes>
+          <Route path="/" element={<Home transactions={transactions} />} />
+          <Route
+            path="/transactions"
+            element={
+              <Transactions
+                transactions={transactions}
+                addTransaction={addTransaction}
+                deleteTransaction={deleteTransaction}
+                editTransaction={editTransaction}
+              />
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={<Dashboard transactions={transactions} />}
+          />
+        </Routes>
+      </main>
     </div>
   );
 }
