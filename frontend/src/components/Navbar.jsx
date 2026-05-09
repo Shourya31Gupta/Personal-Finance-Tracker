@@ -28,7 +28,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <img src={logoImage} alt="Logo" className="w-8 h-8 object-contain drop-shadow-sm" />
+            <img src={logoImage} alt="Logo" className="w-16 h-16 object-contain drop-shadow-sm" />
             <h1 className="text-xl font-bold text-slate-800">FinanceTracker</h1>
           </div>
           
