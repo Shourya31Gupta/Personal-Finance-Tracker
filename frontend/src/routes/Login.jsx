@@ -7,6 +7,7 @@ import { CreditCard } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import bgImage from "@/assets/bg.jpg";
+import logoImage from "@/assets/logo.png";
 
 function Login() {
   const navigate = useNavigate();
@@ -54,9 +55,7 @@ function Login() {
       <div className="relative z-10 w-full max-w-md flex flex-col items-center">
         {/* App Title */}
         <div className="mb-8 flex flex-col items-center">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg mb-4">
-            <CreditCard className="w-6 h-6 text-white" />
-          </div>
+          <img src={logoImage} alt="Logo" className="w-16 h-16 object-contain mb-4 drop-shadow-lg" />
           <h1 className="text-3xl font-extrabold text-white tracking-tight drop-shadow-md text-center">
             Personal Finance Tracker
           </h1>
