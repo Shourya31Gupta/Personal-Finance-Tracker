@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Clock, PieChart, TrendingDown, TrendingUp } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 function Dashboard({ transactions }) {
+  const safeTransactions = useMemo(() => Array.isArray(transactions) ? transactions : [], [transactions]);
   const [stats, setStats] = useState({
     total: 0,
     income: 0,
@@ -15,7 +16,7 @@ function Dashboard({ transactions }) {
 
   useEffect(() => {
     const calculateStats = () => {
-      if (transactions.length === 0) {
+      if (safeTransactions.length === 0) {
         setStats((prev) => ({
           ...prev,
           total: 0,
@@ -30,20 +31,20 @@ function Dashboard({ transactions }) {
         return;
       }
 
-      const total = transactions.length;
+      const total = safeTransactions.length;
 
-      const income = transactions
+      const income = safeTransactions
         .filter((t) => t.type === "income")
         .reduce((sum, t) => sum + Number(t.amount), 0);
 
-      const expenses = transactions
+      const expenses = safeTransactions
         .filter((t) => t.type === "expense")
         .reduce((sum, t) => sum + Number(t.amount), 0);
 
       const balance = income - expenses;
 
       
-      const categories = transactions.reduce((acc, t) => {
+      const categories = safeTransactions.reduce((acc, t) => {
         const category = t.category.toLowerCase();
         if (!acc[category]) acc[category] = 0;
         acc[category] += Number(t.amount);
@@ -51,8 +52,12 @@ function Dashboard({ transactions }) {
       }, {});
 
       // Get recent transactions
-      const recentTransactions = transactions
-        .sort((a, b) => b.id - a.id)
+      const recentTransactions = [...safeTransactions]
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt || b.id || 0).getTime() -
+            new Date(a.createdAt || a.id || 0).getTime()
+        )
         .slice(0, 5);
 
       // Calculate month-over-month trend
@@ -60,11 +65,11 @@ function Dashboard({ transactions }) {
       const currentMonth = currentDate.getMonth();
       const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
 
-      const thisMonthTransactions = transactions.filter(
-        (t) => new Date(t.id).getMonth() === currentMonth
+      const thisMonthTransactions = safeTransactions.filter(
+        (t) => new Date(t.createdAt || t.id).getMonth() === currentMonth
       );
-      const lastMonthTransactions = transactions.filter(
-        (t) => new Date(t.id).getMonth() === lastMonth
+      const lastMonthTransactions = safeTransactions.filter(
+        (t) => new Date(t.createdAt || t.id).getMonth() === lastMonth
       );
 
       const trend = {
@@ -100,7 +105,7 @@ function Dashboard({ transactions }) {
     };
 
     calculateStats();
-  }, [transactions]);
+  }, [safeTransactions]);
 
   return (
     <div className="space-y-8">
@@ -227,7 +232,7 @@ function Dashboard({ transactions }) {
               <div className="space-y-3">
                 {stats.recentTransactions.map((transaction) => (
                   <div
-                    key={transaction.id}
+                    key={transaction._id || transaction.id}
                     className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
                   >
                     <div className="flex items-center space-x-3">
@@ -247,8 +252,8 @@ function Dashboard({ transactions }) {
                           {transaction.description}
                         </p>
                         <p className="text-xs text-slate-500">
-                          {new Date(transaction.id).toLocaleDateString()} at{" "}
-                          {new Date(transaction.id).toLocaleTimeString([], {
+                          {new Date(transaction.createdAt || transaction.id).toLocaleDateString()} at{" "}
+                          {new Date(transaction.createdAt || transaction.id).toLocaleTimeString([], {
                             hour: '2-digit',
                             minute: '2-digit'
                           })}

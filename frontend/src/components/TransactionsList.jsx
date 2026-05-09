@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Edit2, Save, Trash2, X, List, Calendar, Tag, DollarSign } from "lucide-react";
+import { Edit2, Save, Trash2, X, List, Calendar, Tag, IndianRupee } from "lucide-react";
 import { useState } from "react";
 
 function TransactionList({ transactions = [], deleteTransaction, editTransaction }) {
@@ -26,15 +26,16 @@ function TransactionList({ transactions = [], deleteTransaction, editTransaction
           </div>
         ) : (
           <div className="space-y-3">
-            {transactions.map((item) => (
+            {transactions.map((item, index) => (
               <TransactionItem
-                key={item._id}
+                key={item._id || item.id || `${item.description || "transaction"}-${index}`}
                 item={{
                   _id: item._id, 
                   amount: item.amount || 0,
                   description: item.description || "",
                   type: item.type || "expense",
                   category: item.category || "General",
+                  createdAt: item.createdAt,
                 }}
                 deleteTransaction={deleteTransaction}
                 editTransaction={editTransaction}
@@ -65,7 +66,10 @@ function TransactionItem({ item, deleteTransaction, editTransaction }) {
     setIsEditing(false);
   };
 
-  const transactionDate = item._id ? new Date(parseInt(item._id.toString().substring(0, 8), 16) * 1000) : new Date();
+  const fallbackDate = item._id
+    ? new Date(parseInt(item._id.toString().substring(0, 8), 16) * 1000)
+    : new Date();
+  const transactionDate = item.createdAt ? new Date(item.createdAt) : fallbackDate;
   const safeAmount = parseFloat(amount) || 0;
 
   return (
@@ -80,7 +84,7 @@ function TransactionItem({ item, deleteTransaction, editTransaction }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 flex items-center space-x-2">
-                  <DollarSign className="w-4 h-4" />
+                  <IndianRupee className="w-4 h-4" />
                   <span>Amount</span>
                 </label>
                 <Input
@@ -156,9 +160,9 @@ function TransactionItem({ item, deleteTransaction, editTransaction }) {
                   type === "expense" ? "bg-red-100" : "bg-emerald-100"
                 }`}>
                   {type === "expense" ? (
-                    <DollarSign className="w-4 h-4 text-red-600" />
+                    <IndianRupee className="w-4 h-4 text-red-600" />
                   ) : (
-                    <DollarSign className="w-4 h-4 text-emerald-600" />
+                    <IndianRupee className="w-4 h-4 text-emerald-600" />
                   )}
                 </div>
                 <div>

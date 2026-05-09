@@ -5,22 +5,25 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
 
 function Transactions({
-  transactions,
+  transactions = [],
   addTransaction,
   deleteTransaction,
   editTransaction,
+  transactionsLoading = false,
 }) {
-  const balance = transactions.reduce((acc, item) => {
+  const safeTransactions = Array.isArray(transactions) ? transactions : [];
+
+  const balance = safeTransactions.reduce((acc, item) => {
     return item.type === "expense"
     ? acc - Number(item.amount)
     : acc + Number(item.amount);
   }, 0);
 
-  const income = transactions
+  const income = safeTransactions
     .filter(t => t.type === "income")
     .reduce((acc, item) => acc + Number(item.amount), 0);
   
-  const expenses = transactions
+  const expenses = safeTransactions
     .filter(t => t.type === "expense")
     .reduce((acc, item) => acc + Number(item.amount), 0);
 
@@ -64,7 +67,7 @@ function Transactions({
                   ₹{income.toLocaleString()}
                 </p>
                 <p className="text-xs text-emerald-600 mt-1">
-                  {transactions.filter(t => t.type === "income").length} transactions
+                  {safeTransactions.filter(t => t.type === "income").length} transactions
                 </p>
               </div>
               <div className="p-3 bg-emerald-200 rounded-full">
@@ -83,7 +86,7 @@ function Transactions({
                   ₹{expenses.toLocaleString()}
                 </p>
                 <p className="text-xs text-red-600 mt-1">
-                  {transactions.filter(t => t.type === "expense").length} transactions
+                  {safeTransactions.filter(t => t.type === "expense").length} transactions
                 </p>
               </div>
               <div className="p-3 bg-red-200 rounded-full">
@@ -97,11 +100,19 @@ function Transactions({
       {/* Transaction Form and List */}
       <div className="grid gap-8 lg:grid-cols-2">
         <TransactionForm addTransaction={addTransaction} />
-        <TransactionsList 
-          transactions={transactions}  
-          deleteTransaction={deleteTransaction}
-          editTransaction={editTransaction} 
-        />
+        {transactionsLoading ? (
+          <Card className="bg-white shadow-lg">
+            <CardContent className="p-8 text-center text-slate-600">
+              Loading your transactions...
+            </CardContent>
+          </Card>
+        ) : (
+          <TransactionsList
+            transactions={safeTransactions}
+            deleteTransaction={deleteTransaction}
+            editTransaction={editTransaction}
+          />
+        )}
       </div>
     </div>
   );

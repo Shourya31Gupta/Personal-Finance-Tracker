@@ -11,14 +11,16 @@ import {
   PlusCircle,
   TrendingUp,
   Wallet,
-  DollarSign,
+  IndianRupee,
   TrendingDown,
   Calendar,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function Home({ transactions }) {
-  const stats = transactions.reduce(
+  const safeTransactions = Array.isArray(transactions) ? transactions : [];
+
+  const stats = safeTransactions.reduce(
     (acc, item) => {
       const amount = Number(item.amount);
       if (item.type === "expense") {
@@ -32,9 +34,13 @@ function Home({ transactions }) {
     { total: 0, income: 0, expenses: 0 }
   );
 
-  const recentTransactions = transactions
+  const recentTransactions = safeTransactions
     .slice()
-    .sort((a, b) => b.id - a.id)
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt || b.id || 0).getTime() -
+        new Date(a.createdAt || a.id || 0).getTime()
+    )
     .slice(0, 3);
 
   return (
@@ -82,7 +88,7 @@ function Home({ transactions }) {
                   ₹{stats.income.toLocaleString()}
                 </p>
                 <p className="text-xs text-blue-600 mt-1">
-                  From {transactions.filter(t => t.type === "income").length} transactions
+                  From {safeTransactions.filter(t => t.type === "income").length} transactions
                 </p>
               </div>
               <div className="p-3 bg-blue-200 rounded-full">
@@ -101,7 +107,7 @@ function Home({ transactions }) {
                   ₹{stats.expenses.toLocaleString()}
                 </p>
                 <p className="text-xs text-red-600 mt-1">
-                  From {transactions.filter(t => t.type === "expense").length} transactions
+                  From {safeTransactions.filter(t => t.type === "expense").length} transactions
                 </p>
               </div>
               <div className="p-3 bg-red-200 rounded-full">
@@ -129,7 +135,7 @@ function Home({ transactions }) {
               </Link>
               <Link to="/dashboard">
                 <Button variant="outline" className="border-slate-300 hover:bg-slate-50">
-                  <DollarSign className="w-4 h-4 mr-2" />
+                  <IndianRupee className="w-4 h-4 mr-2" />
                   View Dashboard
                 </Button>
               </Link>
@@ -179,7 +185,7 @@ function Home({ transactions }) {
                         {transaction.description}
                       </p>
                       <p className="text-sm text-slate-500">
-                        {new Date(transaction.id).toLocaleDateString("en-US", {
+                        {new Date(transaction.createdAt || transaction.id).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
                           year: "numeric",

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Plus, DollarSign, FileText, Tag, PlusCircle } from "lucide-react";
+import { Plus, IndianRupee, FileText, Tag, PlusCircle } from "lucide-react";
 
 function TransactionForm({ addTransaction }) {
   const [amount, setAmount] = useState("");
@@ -64,7 +64,7 @@ function TransactionForm({ addTransaction }) {
         <form onSubmit={handleAdd} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="amount" className="text-sm font-medium text-slate-700 flex items-center space-x-2">
-              <DollarSign className="w-4 h-4" />
+              <IndianRupee className="w-4 h-4" />
               <span>Amount</span>
             </label>
             <Input
