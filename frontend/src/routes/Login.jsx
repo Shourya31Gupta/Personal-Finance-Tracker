@@ -55,7 +55,7 @@ function Login() {
       <div className="relative z-10 w-full max-w-md flex flex-col items-center">
         {/* App Title */}
         <div className="mb-8 flex flex-col items-center">
-          <img src={logoImage} alt="Logo" className="w-32 h-32 object-contain mb-4 drop-shadow-lg" />
+          <img src={logoImage} alt="Logo" className="w-32 h-32 object-contain mb-1 drop-shadow-lg" />
           <h1 className="text-3xl font-extrabold text-white tracking-tight drop-shadow-md text-center">
             Personal Finance Tracker
           </h1>
