@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CreditCard } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
+import bgImage from "@/assets/bg.jpg";
 
 function Login() {
   const navigate = useNavigate();
@@ -43,7 +44,10 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-4 py-10">
+    <div 
+      className="min-h-screen bg-cover bg-center flex items-center justify-center px-4 py-10"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       <Card className="w-full max-w-md bg-white shadow-lg">
         <CardHeader className="space-y-2">
           <div className="mx-auto w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
